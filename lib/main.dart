@@ -1,8 +1,11 @@
+// ignore: depend_on_referenced_packages
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:flutter/material.dart';
 
-import 'features/pages/home_page.dart';
+import 'core/configs/navigate.dart';
 
 void main() {
+  usePathUrlStrategy();
   runApp(const App());
 }
 
@@ -11,14 +14,14 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Goggxi',
+      routerConfig: router,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
     );
   }
 }

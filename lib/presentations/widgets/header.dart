@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goggxi_portofolio/core/utils/extensions/padding.dart';
 
-const double _kAppBarHeight = 80;
+const double _kAppBarHeight = 60;
 const double _kPadding = 20;
 
 class AppHeader {
@@ -59,7 +60,7 @@ class _AppBarPrimary extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ).paddingSymmetric(h: _kPadding);
   }
 
   Widget _buildMobileMenu() {
