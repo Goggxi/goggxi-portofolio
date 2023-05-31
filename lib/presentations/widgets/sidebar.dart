@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goggxi_portofolio/core/utils/extensions/context.dart';
 import 'package:goggxi_portofolio/core/utils/extensions/padding.dart';
-import 'package:goggxi_portofolio/presentations/pages/design_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/desktop_web_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/home_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/mobile_apps_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/tutorial_page.dart';
+import 'package:goggxi_portofolio/core/utils/resources/images.dart';
+import 'package:goggxi_portofolio/data/models/menu.dart';
+import 'package:goggxi_portofolio/data/models/action.dart' as a;
+import 'package:goggxi_portofolio/presentations/widgets/hover.dart';
+
+String _getTitle(String path) {
+  final menu = Menu.menus.firstWhere((menu) => menu.path == path);
+  return menu.title == 'Home' ? 'Goggxi' : 'Goggxi - ${menu.title}';
+}
 
 class SidebarApp extends StatelessWidget {
   const SidebarApp({super.key});
@@ -16,109 +19,117 @@ class SidebarApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final routeName = ModalRoute.of(context)?.settings.name ?? '';
     bool isSelected(String path) => routeName == path;
-    return Container(
-      width: context.width * 0.2,
-      height: context.height,
-      constraints: const BoxConstraints(
-        minWidth: 280,
-      ),
-      color: Colors.grey[900],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                'GOGGXI',
-                style: context.textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ).paddingOnly(left: 26, top: 50, bottom: 50),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              _Menu.menus.length,
-              (index) {
-                final menu = _Menu.menus[index];
-                return TextButton(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    foregroundColor:
-                        isSelected(menu.path) ? Colors.white : Colors.grey[400],
-                    textStyle: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: isSelected(menu.path)
-                          ? FontWeight.bold
-                          : FontWeight.w200,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (isSelected(menu.path)) return;
-                    context.goNamed(menu.path);
-                  },
-                  child: Text(menu.title),
-                ).paddingOnly(left: 20, bottom: 10);
-              },
+    return Title(
+      title: _getTitle(routeName),
+      color: Colors.white,
+      child: LayoutBuilder(
+        builder: (_, constraints) {
+          final isMobile = constraints.maxWidth < 800;
+          return Container(
+            width: context.width * 0.2,
+            height: context.height,
+            constraints: const BoxConstraints(
+              minWidth: 280,
             ),
-          ),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _Action.actions
-                .map(
-                  (action) => IconButton(
-                    onPressed: () {},
-                    icon: Icon(action.icon),
-                    color: Colors.grey[400],
-                    iconSize: 18,
-                    visualDensity: VisualDensity.compact,
+            color: Colors.grey[900],
+            child: Column(
+              crossAxisAlignment:
+                  isMobile ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Visibility(
+                  visible: !isMobile,
+                  child: InkWell(
+                    onTap: () {
+                      context.goNamed('/');
+                    },
+                    child: HoverBuilder(builder: (isHover) {
+                      return Row(
+                        children: [
+                          RotationTransition(
+                            turns: AlwaysStoppedAnimation(isHover ? 0.08 : 0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.asset(
+                                ResImages.logoLight,
+                                width: 36,
+                                height: 36,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            ' Goggxi',
+                            style: context.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: isHover ? FontWeight.bold : null,
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ).paddingOnly(left: 26, top: 50, bottom: 30),
+                ),
+                Column(
+                  crossAxisAlignment: isMobile
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    Menu.menus.length,
+                    (index) {
+                      final menu = Menu.menus[index];
+                      return TextButton(
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          foregroundColor: isSelected(menu.path)
+                              ? Colors.white
+                              : Colors.grey[400],
+                          textStyle: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: isSelected(menu.path)
+                                ? FontWeight.bold
+                                : FontWeight.w200,
+                          ),
+                        ),
+                        onPressed: () {
+                          if (isSelected(menu.path)) return;
+                          context.goNamed(menu.path);
+                        },
+                        child: Text(menu.title),
+                      ).paddingOnly(
+                        left: isMobile ? 0 : 20,
+                        right: isMobile ? 20 : 0,
+                        bottom: 10,
+                      );
+                    },
                   ),
-                )
-                .toList(),
-          ).paddingOnly(bottom: 20),
-        ],
+                ).paddingOnly(top: isMobile ? 40 : 0),
+                const Spacer(),
+                Center(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    children: a.Action.actions
+                        .map(
+                          (action) => HoverBuilder(builder: (isHover) {
+                            return IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                action.icon,
+                                color: isHover ? Colors.white : null,
+                              ),
+                              color: Colors.grey[400],
+                              iconSize: isHover ? 20 : 18,
+                              visualDensity: VisualDensity.compact,
+                            );
+                          }),
+                        )
+                        .toList(),
+                  ).paddingOnly(bottom: 20),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
-}
-
-class _Menu {
-  final String title;
-  final String path;
-
-  _Menu({
-    required this.title,
-    required this.path,
-  });
-
-  static List<_Menu> get menus => [
-        _Menu(title: 'Home', path: HomePage.routeName),
-        _Menu(title: 'Mobile Apps', path: MobileAppsPage.routeName),
-        _Menu(title: 'Desktop & Web', path: DesktopWebPage.routeName),
-        _Menu(title: 'Design', path: DesignPage.routeName),
-        _Menu(title: 'Tutorial', path: TutorialPage.routeName),
-      ];
-}
-
-class _Action {
-  final String title;
-  final IconData icon;
-  final String path;
-
-  _Action({
-    required this.title,
-    required this.icon,
-    required this.path,
-  });
-
-  static List<_Action> get actions => [
-        _Action(title: 'Youtube', icon: FontAwesomeIcons.youtube, path: ''),
-        _Action(title: 'Facebook', icon: FontAwesomeIcons.facebook, path: ''),
-        _Action(title: 'Instagram', icon: FontAwesomeIcons.instagram, path: ''),
-        _Action(title: 'Linkedin', icon: FontAwesomeIcons.linkedin, path: ''),
-        _Action(title: 'Twitter', icon: FontAwesomeIcons.twitter, path: ''),
-        _Action(title: 'Github', icon: FontAwesomeIcons.github, path: ''),
-      ];
 }

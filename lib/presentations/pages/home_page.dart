@@ -8,8 +8,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SectionApp(
-      child: Center(child: Text('Home Page')),
+    return SectionApp(
+      child: const Center(child: Text('Home Page')),
     );
   }
 }
