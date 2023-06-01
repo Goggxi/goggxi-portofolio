@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goggxi_portofolio/presentations/widgets/section_app.dart';
+import 'package:goggxi_portofolio/presentation/widgets/section_app.dart';
 
 class TutorialPage extends StatelessWidget {
   const TutorialPage({super.key});

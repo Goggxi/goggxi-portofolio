@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:goggxi_portofolio/core/utils/extensions/context.dart';
-import 'package:goggxi_portofolio/presentations/widgets/section_app.dart';
+import 'package:goggxi_portofolio/presentation/widgets/section_app.dart';
 
 class MobileAppsPage extends StatefulWidget {
   const MobileAppsPage({super.key});

@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
-import 'package:goggxi_portofolio/presentations/pages/design_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/desktop_web_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/home_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/mobile_apps_page.dart';
-import 'package:goggxi_portofolio/presentations/pages/tutorial_page.dart';
+import 'package:goggxi_portofolio/presentation/pages/design_page.dart';
+import 'package:goggxi_portofolio/presentation/pages/desktop_web_page.dart';
+import 'package:goggxi_portofolio/presentation/pages/home_page.dart';
+import 'package:goggxi_portofolio/presentation/pages/mobile_apps_page.dart';
+import 'package:goggxi_portofolio/presentation/pages/tutorial_page.dart';
 
 final router = GoRouter(
   routes: [
